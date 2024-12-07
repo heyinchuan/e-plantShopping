@@ -7,17 +7,18 @@ import { addItem } from './CartSlice';
 function ProductList() {
     const [showCart, setShowCart] = useState(false);
     const [showPlants, setShowPlants] = useState(false); // State to control the visibility of the About Us page
-    const [addedToCart, setAddedToCart] = useState({});
+    const [addedToCart, setAddedToCart] = useState({}); // 设置Add to cart 按钮的状态
     const dispatch = useDispatch();
     const cart = useSelector((state) => state.cart.items); // 获取购物车的 items
     const cartTotalItems = cart.reduce((total, item) => total + item.quantity, 0); // 计算商品总数
-    // 用于调试cartTotalItems
-    // 使用 useEffect 在 cartTotalItems 更新时触发 alert
-    // useEffect(() => {
-    //     if (cartTotalItems > 0) {
-    //         alert(`购物车商品数量：${cartTotalItems}`);
-    //     }
-    // }, [cartTotalItems]);
+    // 每次购物车内容更新时，动态更新按钮状态。只把购物车中还有的item的name设置为true, 再通过setAddedToCart更新按钮状态。
+    useEffect(() => {
+        const updatedState = {};
+        cart.forEach((item) => {
+            updatedState[item.name] = true; // 标记购物车中的商品为禁用
+        });
+        setAddedToCart(updatedState);
+    }, [cart]);
 
     const plantsArray = [
         {
@@ -318,7 +319,13 @@ function ProductList() {
                                         <div className='product-title'>{plant.name}</div>
                                         <div>{plant.description}</div>
                                         <div className='product-price'>{plant.cost}</div>
-                                        <button className='product-button' onClick={() => handleAddToCart(plant)}>Add to Cart</button>
+                                        <button 
+                                            className='product-button' 
+                                            onClick={() => handleAddToCart(plant)}
+                                            disabled={!!addedToCart[plant.name]}   // 根据状态判断是否禁用
+                                        >
+                                            {addedToCart[plant.name] ? "Added to Cart" : "Add to Cart"}
+                                        </button>
                                     </div>
                                 ))}
                             </div>

@@ -223,7 +223,7 @@ function ProductList() {
         padding: '15px',
         display: 'flex',
         justifyContent: 'space-between',
-        alignIems: 'center',
+        alignItems: 'center',
         fontSize: '20px',
     }
     const styleObjUl = {
@@ -248,7 +248,7 @@ function ProductList() {
     };
 
     const handleContinueShopping = (e) => {
-        e.preventDefault();
+        // e.preventDefault();  // 由于 handleContinueShopping 的唯一目的是切换视图（通过更新状态 showCart），而非阻止默认行为，因此使用 e.preventDefault() 没有必要
         setShowCart(false);
     };
 

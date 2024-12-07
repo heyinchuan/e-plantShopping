@@ -10,18 +10,26 @@ export const CartSlice = createSlice({
       const {name, image, cost} = action.payload;
       const existingItem = state.items.find(item => item.name === name);
       if (existingItem) {
-        existingItem.quantity++;
+        existingItem.quantity += 1;
       } else {
-        state.items.push({name, image, cost, quantity: 1});
+        state.items.push({name, image, cost: parseFloat(cost.replace('$', '')), quantity: 1});
       }
     },
     removeItem: (state, action) => {
-      state.items = state.items.filter(item => item.name !== action.payload);
+      const { name } = action.payload;
+      state.items = state.items.filter(item => item.name !== name);
     },
     updateQuantity: (state, action) => {
-      const itemToUpdate = state.items.find(item => item.name === action.payload);
-      if (itemToUpdate) {
-        itemToUpdate.quantity = quantity;
+      const { name, quantity } = action.payload;
+      const itemIndex = state.items.findIndex(item => item.name === name);
+      if (itemIndex !== -1) {
+        if (quantity === 0) {
+          // 如果数量变为0，移除商品
+          state.items.splice(itemIndex, 1);
+        } else {
+          // 否则更新数量
+          state.items[itemIndex].quantity = quantity;
+        }
       }
     },
   },
